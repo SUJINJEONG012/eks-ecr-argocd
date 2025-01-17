@@ -1,10 +1,10 @@
 name: App With Github Actions with EKS-ArgoCD
 
 on:
-#workflow_dispatch
- push:
-   branches: 
-     - main
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - 'manifest/**'
 
 jobs:
   ci:
@@ -27,7 +27,6 @@ jobs:
     - name: Log in to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v1
       with:
-        # AWS_REGION environment variable is used
         registry-type: private  # 'public' for Amazon ECR Public, or leave it empty for private ECR
 
     - name: Set up JDK 17
@@ -74,14 +73,16 @@ jobs:
 
     - name: Set up Image
       run: |
-        sed -i'' "s%image: ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPO }}:[A-z0-9]*%image: ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPO }}:${{ github.sha }}%" ./manifest/argocd-deployment.yaml
+          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_URI
+          docker build -t $ECR_URI: latest .
+          docker push $ECR_URI:latest
 
-    # - name: Commit and push Changes
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
-    #   run: |
-    #     git config --local user.email "${{ secrets.GIT_EMAIL }}"
-    #     git config --local user.name "${{ secrets.GIT_NAME }}"
-    #     git add .
-    #     git commit -m "Update image to latest"
-    #     git push
+    - name: Commit and push Changes
+      env:
+        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+      run: |
+        git config --local user.email "${{ secrets.GIT_EMAIL }}"
+        git config --local user.name "${{ secrets.GIT_NAME }}"
+        git add .
+        git commit -m "Update image to latest"
+        git push
