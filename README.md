@@ -1,1 +1,1 @@
-# eks-ecr-argocd
+# app-with-basic

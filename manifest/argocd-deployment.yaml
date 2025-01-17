@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-argocd-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: argocd-app
+    spec:
+      containers:
+      - name: argocd-app-container
+        image: jeongsujin/app-with-argocd:d807887aca39e4965f64f33573d6d78ddfb39c45
+       #imagePullPolicy: Always
+        ports:
+          - protocol: TCP
+            containerPort: 8080
