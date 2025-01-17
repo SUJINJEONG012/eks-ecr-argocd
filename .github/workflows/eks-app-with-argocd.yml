@@ -88,5 +88,5 @@ jobs:
         git config --local user.email "${{ secrets.GIT_EMAIL }}"
         git config --local user.name "${{ secrets.GIT_NAME }}"
         git add .
-        git commit -m "Update image to latest"
+        git diff --cached --quiet || git commit -m "Update image to latest"
         git push
