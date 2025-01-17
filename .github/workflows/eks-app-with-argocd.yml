@@ -1,5 +1,6 @@
 name: App With Github Actions with EKS-ArgoCD
 
+
 on:
 #workflow_dispatch
  push:
