@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: argocd-app-container
-        image: jeongsujin/app-with-argocd:d807887aca39e4965f64f33573d6d78ddfb39c45
-       #imagePullPolicy: Always
+        image: 522814707405.dkr.ecr.ap-northeast-2.amazonaws.com/eks-second:latest  # ECR 이미지 URL
+        imagePullPolicy: Always  # 이미지가 항상 최신으로 pull 되도록 설정
         ports:
           - protocol: TCP
             containerPort: 8080
