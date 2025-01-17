@@ -11,6 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Log in to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        region: ap-northeast-2  # 서울 리전
+        
     - uses: actions/checkout@v4
       with:
         repository: ${{ secrets.GIT_NAME }}/eks-ecr-argocd
@@ -45,10 +53,6 @@ jobs:
         name: app
         path: ./target/*.jar
 
-    # ECR Login Step
-    - name: Login to Amazon ECR
-      uses: aws-actions/amazon-ecr-login@v1
-
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
     
@@ -65,7 +69,7 @@ jobs:
 
     - name: Set up Image
       run: |
-        sed -i "s%image: ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPO }}:[A-z0-9]*%image: ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPO }}:${{ github.sha }}%" ./manifest/argocd-deployment.yaml
+        sed -i'' "s%image: ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPO }}:[A-z0-9]*%image: ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPO }}:${{ github.sha }}%" ./manifest/argocd-deployment.yaml
 
     - name: Commit and push Changes
       env:
