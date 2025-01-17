@@ -13,18 +13,16 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        repository: ${{ secrets.GIT_NAME }}/eks-ecr-argocd
+        ref: main
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Log in to Amazon ECR
       uses: aws-actions/amazon-ecr-login@v1
       with:
         region: ap-northeast-2  # 서울 리전
-        
-    - uses: actions/checkout@v4
-      with:
-        repository: ${{ secrets.GIT_NAME }}/eks-ecr-argocd
-        ref: main
-        token: ${{ secrets.GITHUB_TOKEN }}
-        
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
@@ -73,10 +71,10 @@ jobs:
 
     - name: Commit and push Changes
       env:
-         GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
       run: |
-       git config --local user.email "${{ secrets.GIT_EMAIL }}"
-       git config --local user.name "${{ secrets.GIT_NAME }}"
-       git add .
-       git commit -m "Update image to latest"
-       git push
+        git config --local user.email "${{ secrets.GIT_EMAIL }}"
+        git config --local user.name "${{ secrets.GIT_NAME }}"
+        git add .
+        git commit -m "Update image to latest"
+        git push
